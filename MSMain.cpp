@@ -30,7 +30,7 @@ void input();
 
 void gameOver();
 
-void revealTile();
+void revealTile(int* grid,int posX, int posY);
 
 void blankHandling();
 
@@ -68,8 +68,20 @@ void gameOver(){
 
 }
 
-void revealTile(){
-
+void revealTile(int** grid,int posX, int posY){
+    // Not known how the grid will be organized, using forced data for now
+    int bombCount = 0;
+    for (int searchX{-1};searchX<1;searchX++) {
+        for (int searchY{-1};searchY<1;searchY++) {
+            if (grid[posX+searchX][posY+searchY]==-1) {
+                bombCount++;
+            }
+        }
+    }
+    if (bombCount==0) {
+        
+    }
+    grid[posX][posY] = bombCount;
 }
 
 void blankHandling(){
