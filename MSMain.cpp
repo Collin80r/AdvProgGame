@@ -1,23 +1,56 @@
-void start{
+#include <iostream>
+#include <array>
+using namespace std;
 
-}
-void printGrid{
+/*------------------
+---- PROTOTYPES ----
+------------------*/
 
-}
-void input{
+void startUp();
 
-}
+void printGrid();
 
-void gameOver{
+void input();
 
-}
-void reveal{
+void gameOver();
 
-}
-void blankHandling{
-    
-}
+void revealTile();
+
+void blankHandling();
+
+/*------------------
+----    MAIN    ----
+------------------*/
+
 int main(){
 
 
+}
+
+/*-------------------
+----  FUNCTIONS  ----
+-------------------*/
+
+void startUp(){
+
+}
+
+void printGrid(){
+
+}
+
+void input(){
+
+}
+
+void gameOver(){
+
+}
+
+void revealTile(){
+
+}
+
+void blankHandling(){
+    
 }
