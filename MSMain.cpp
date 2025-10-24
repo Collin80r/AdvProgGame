@@ -39,7 +39,7 @@ void blankHandling();
 ------------------*/
 
 int main(){
-
+    auto grid = createGrid();
 
 }
 
@@ -48,7 +48,6 @@ int main(){
 -------------------*/
 
 vector<vector<Tile>> createGrid(){
-    Tile tile;
     vector<vector<Tile>> grid;
     return grid;
 }
