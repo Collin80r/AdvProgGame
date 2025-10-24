@@ -1,10 +1,26 @@
 #include <iostream>
-#include <array>
+#include <vector>
 using namespace std;
+
+class Tile {
+    public:
+        bool isCovered;
+        int adjacentBombs;
+        bool isBomb;
+        bool isFlagged;
+        Tile() {
+            isCovered = true;
+            adjacentBombs = 0;
+            isBomb = false;
+            isFlagged = false;
+        }
+};
 
 /*------------------
 ---- PROTOTYPES ----
 ------------------*/
+
+vector<vector<Tile>> createGrid();
 
 void startUp();
 
@@ -30,6 +46,12 @@ int main(){
 /*-------------------
 ----  FUNCTIONS  ----
 -------------------*/
+
+vector<vector<Tile>> createGrid(){
+    Tile tile;
+    vector<vector<Tile>> grid;
+    return grid;
+}
 
 void startUp(){
 
