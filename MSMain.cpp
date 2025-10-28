@@ -58,7 +58,7 @@ void startUp(){
 
 }
 
-void printGrid(const array<Tile>& tiles){
+void printGrid(const vector<Tile>& tiles){
     int rowSize = sqrt(tiles.size());
     int column = 0;
     for(const Tile& t : tiles){
@@ -66,7 +66,7 @@ void printGrid(const array<Tile>& tiles){
         if(t.isFlagged){
             cout << "F";
         }
-        else if(t.covered){
+        else if(t.isCovered){
             cout << "O";
         }
         else if(t.isBomb){
