@@ -1,5 +1,7 @@
 #include <iostream>
 #include <vector>
+#include <array>
+#include <cmath>
 using namespace std;
 
 class Tile {
@@ -56,8 +58,31 @@ void startUp(){
 
 }
 
-void printGrid(){
-
+void printGrid(const array<Tile>& tiles){
+    int rowSize = sqrt(tiles.size());
+    int column = 0;
+    for(const Tile& t : tiles){
+        column++;
+        if(t.isFlagged){
+            cout << "F";
+        }
+        else if(t.covered){
+            cout << "O";
+        }
+        else if(t.isBomb){
+            cout << "X";
+        }
+        else if(t.adjacentBombs != 0){
+            cout << t.adjacentBombs;
+        }
+        else{
+            cout << " ";
+        }
+        if(column % rowSize == 0){
+            cout << endl;
+            column = 0;
+        }
+    }
 }
 
 void input(){
