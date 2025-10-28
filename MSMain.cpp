@@ -102,7 +102,17 @@ void printGrid(){
 
 }
 
-void input(){
+void input(int gridSize){
+    int option{0};
+    int x{};
+    int y{};
+    cout<<"Options: \n(1) dig\n(2) place flag\n(3) remove flag"<<endl;
+    cin>>option;
+    cout<<"Give x and y coordinates separately: ";
+    cin>>x>>y;
+    if (((x < gridSize) && (x >= 0)) && ((y < gridSize) && (y >=0))){
+        cout<<"yes"<<endl;
+    }
 
 }
 
