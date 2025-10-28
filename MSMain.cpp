@@ -1,5 +1,6 @@
 #include <iostream>
 #include <vector>
+#include <stdlib.h>
 using namespace std;
 
 class Tile {
@@ -30,7 +31,7 @@ void input();
 
 void gameOver();
 
-void revealTile(int** grid,int posX, int posY);
+void revealTile();
 
 void blankHandling();
 
@@ -71,6 +72,25 @@ vector<vector<Tile>> createGrid(int aBombCount, int aGridSize){
         } while (grid.at(xPos).at(yPos).isBomb);
         grid[xPos][yPos].isBomb = true;
     }
+
+    // Initialize Numbers
+    for (int x{0};x<aGridSize;x++) {
+        for (int y{0};y<aGridSize;y++) {
+            if (!grid.at(x).at(y).isBomb) {
+                int adjacentBombs{0};
+                for (int xSearch{-1};xSearch<=1;xSearch++) {
+                    for (int ySearch{-1};ySearch<=1;ySearch++) {
+                        if ((x+xSearch > -1) && (y+ySearch > -1) && (x+xSearch < aGridSize) && (y+ySearch < aGridSize)) {
+                            if (grid.at(x+xSearch).at(y+ySearch).isBomb){
+                                adjacentBombs++;
+                            }
+                        }
+                    }
+                }
+                grid.at(x).at(y).adjacentBombs = adjacentBombs;
+            }
+        }
+    }
     return grid;
 }
 
@@ -90,20 +110,8 @@ void gameOver(){
 
 }
 
-void revealTile(int** grid,int posX, int posY){
-    // Not known how the grid will be organized, using forced data for now
-    int bombCount = 0;
-    for (int searchX{-1};searchX<1;searchX++) {
-        for (int searchY{-1};searchY<1;searchY++) {
-            if (grid[posX+searchX][posY+searchY]==-1) {
-                bombCount++;
-            }
-        }
-    }
-    if (bombCount==0) {
-        
-    }
-    grid[posX][posY] = bombCount;
+void revealTile(){
+
 }
 
 void blankHandling(){
