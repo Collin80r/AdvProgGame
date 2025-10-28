@@ -20,7 +20,7 @@ class Tile {
 ---- PROTOTYPES ----
 ------------------*/
 
-vector<vector<Tile>> createGrid();
+vector<vector<Tile>> createGrid(int aBombCount, int aGridSize);
 
 void startUp();
 
@@ -30,7 +30,7 @@ void input();
 
 void gameOver();
 
-void revealTile(int* grid,int posX, int posY);
+void revealTile(int** grid,int posX, int posY);
 
 void blankHandling();
 
@@ -39,7 +39,9 @@ void blankHandling();
 ------------------*/
 
 int main(){
-    auto grid = createGrid();
+    int bombCount{15};
+    int gridSize{5};
+    auto grid = createGrid(bombCount, gridSize);
 
 }
 
@@ -47,8 +49,28 @@ int main(){
 ----  FUNCTIONS  ----
 -------------------*/
 
-vector<vector<Tile>> createGrid(){
+vector<vector<Tile>> createGrid(int aBombCount, int aGridSize){
+    // Initialize Grid
     vector<vector<Tile>> grid;
+    vector<Tile> column;
+    Tile tile;
+    for (int j{0};j<aGridSize;j++) {
+        column.push_back(tile);
+    }
+    for (int i{0};i<aGridSize;i++) {
+        grid.push_back(column);
+    }
+
+    // Initialize Bombs
+    for (int i{0};i<aBombCount;i++) {
+        int xPos{0};
+        int yPos{0};
+        do {
+            xPos = rand() % (aGridSize);
+            yPos = rand() % (aGridSize);
+        } while (grid.at(xPos).at(yPos).isBomb);
+        grid[xPos][yPos].isBomb = true;
+    }
     return grid;
 }
 
