@@ -27,7 +27,7 @@ void startUp();
 
 void printGrid();
 
-void input();
+void input(int);
 
 void gameOver();
 
@@ -103,20 +103,34 @@ void printGrid(){
 }
 
 void input(int gridSize){
-    int option{0};
+    int selection{0};
     int x{0};
     int y{0};
-    cout<<"Options: \n(1) dig\n(2) place flag\n(3) remove flag"<<endl;
-    cin>>option;
-    cout<<"Give x and y coordinates separately: ";
-    cin>>x>>y;
-    while (((x < gridSize) && (x >= 0)) && ((y < gridSize) && (y >=0))){ //validate input
-        cout<<"yes"<<endl;
-
-        cout<<"Invalid syntax. Try again: ";
-        cin>>x>>y;
-    }////bro fix youur logic
-
+    int valid{1};
+    do{
+        cout<<"Options: \n(1) dig\n(2) place flag\n(3) remove flag"<<endl;
+        cin>>selection;
+        if ((selection == 1) || (selection == 2) ||(selection == 3)){
+            valid = 1;
+        }else{
+            valid = 0;
+            cout<<"\nYour input was not in the given range. Pick 1, 2, or 3.\n";
+        }
+    } while (valid == 0);
+    do{
+        cout<<"x: ";
+        cin>>x;
+        cout<<"\ny: ";
+        cin>>y;
+        if (!(((x < gridSize) && (x >= 0)) && ((y < gridSize) && (y >=0)))){
+            cout<<"\nInput out of bounds. Use x and y coordinates from 0 to "<<gridSize<<"."<<endl;
+            valid = 0;
+        }else{
+            valid = 1;
+        }
+    } while (valid == 0);
+    //now do the chekcing thingies
+    
 }
 
 void gameOver(){
