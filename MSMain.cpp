@@ -1,5 +1,6 @@
 #include <iostream>
 #include <vector>
+#include <stdlib.h>
 using namespace std;
 
 class Tile {
@@ -20,7 +21,7 @@ class Tile {
 ---- PROTOTYPES ----
 ------------------*/
 
-vector<vector<Tile>> createGrid();
+vector<vector<Tile>> createGrid(int aBombCount, int aGridSize);
 
 void startUp();
 
@@ -39,7 +40,9 @@ void blankHandling();
 ------------------*/
 
 int main(){
-    auto grid = createGrid();
+    int bombCount{15};
+    int gridSize{5};
+    auto grid = createGrid(bombCount, gridSize);
 
 }
 
@@ -47,8 +50,47 @@ int main(){
 ----  FUNCTIONS  ----
 -------------------*/
 
-vector<vector<Tile>> createGrid(){
+vector<vector<Tile>> createGrid(int aBombCount, int aGridSize){
+    // Initialize Grid
     vector<vector<Tile>> grid;
+    vector<Tile> column;
+    Tile tile;
+    for (int j{0};j<aGridSize;j++) {
+        column.push_back(tile);
+    }
+    for (int i{0};i<aGridSize;i++) {
+        grid.push_back(column);
+    }
+
+    // Initialize Bombs
+    for (int i{0};i<aBombCount;i++) {
+        int xPos{0};
+        int yPos{0};
+        do {
+            xPos = rand() % (aGridSize);
+            yPos = rand() % (aGridSize);
+        } while (grid.at(xPos).at(yPos).isBomb);
+        grid[xPos][yPos].isBomb = true;
+    }
+
+    // Initialize Numbers
+    for (int x{0};x<aGridSize;x++) {
+        for (int y{0};y<aGridSize;y++) {
+            if (!grid.at(x).at(y).isBomb) {
+                int adjacentBombs{0};
+                for (int xSearch{-1};xSearch<=1;xSearch++) {
+                    for (int ySearch{-1};ySearch<=1;ySearch++) {
+                        if ((x+xSearch > -1) && (y+ySearch > -1) && (x+xSearch < aGridSize) && (y+ySearch < aGridSize)) {
+                            if (grid.at(x+xSearch).at(y+ySearch).isBomb){
+                                adjacentBombs++;
+                            }
+                        }
+                    }
+                }
+                grid.at(x).at(y).adjacentBombs = adjacentBombs;
+            }
+        }
+    }
     return grid;
 }
 
