@@ -1,7 +1,5 @@
 #include <iostream>
 #include <vector>
-#include <array>
-#include <cmath>
 using namespace std;
 
 class Tile {
