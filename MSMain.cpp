@@ -24,7 +24,7 @@ vector<vector<Tile>> createGrid(int aBombCount, int aGridSize);
 
 void startUp();
 
-void printGrid();
+void printGrid(const vector<vector<Tile>> grid);
 
 void input();
 
@@ -42,6 +42,7 @@ int main(){
     int bombCount{15};
     int gridSize{5};
     auto grid = createGrid(bombCount, gridSize);
+    printGrid(grid);
 
 }
 
@@ -97,21 +98,21 @@ void startUp(){
 
 }
 
-void printGrid(const vector<vector<Tile>>& t){
-    int rowSize = t.size();
+void printGrid(const vector<vector<Tile>> grid){
+    int rowSize = grid.size();
     for(int i = 0; i < rowSize; i++){
         for(int j = 0; j < rowSize; j++){
-            if(t[i][j].isFlagged){
+            if(grid[i][j].isFlagged){
                 cout << "F";
             }
-            else if(t[i][j].isCovered){
+            else if(grid[i][j].isCovered){
                 cout << "O";
             }
-            else if(t[i][j].isBomb){
+            else if(grid[i][j].isBomb){
                 cout << "X";
             }
-            else if(t[i][j].adjacentBombs != 0){
-                cout << t[i][j].adjacentBombs;
+            else if(grid[i][j].adjacentBombs != 0){
+                cout << grid[i][j].adjacentBombs;
             }
             else{
                 cout << " ";
