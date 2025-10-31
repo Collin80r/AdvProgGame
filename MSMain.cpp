@@ -1,6 +1,5 @@
 #include <iostream>
 #include <vector>
-#include <stdlib.h>
 using namespace std;
 
 class Tile {
@@ -98,8 +97,28 @@ void startUp(){
 
 }
 
-void printGrid(){
-
+void printGrid(const vector<vector<Tile>>& t){
+    int rowSize = t.size();
+    for(int i = 0; i < rowSize; i++){
+        for(int j = 0; j < rowSize; j++){
+            if(t[i][j].isFlagged){
+                cout << "F";
+            }
+            else if(t[i][j].isCovered){
+                cout << "O";
+            }
+            else if(t[i][j].isBomb){
+                cout << "X";
+            }
+            else if(t[i][j].adjacentBombs != 0){
+                cout << t[i][j].adjacentBombs;
+            }
+            else{
+                cout << " ";
+            }
+        }
+        cout << endl;
+    }
 }
 
 void input(){
