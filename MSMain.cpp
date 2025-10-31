@@ -58,30 +58,27 @@ void startUp(){
 
 }
 
-void printGrid(const vector<Tile>& tiles){
-    int rowSize = sqrt(tiles.size());
-    int column = 0;
-    for(const Tile& t : tiles){
-        column++;
-        if(t.isFlagged){
-            cout << "F";
+void printGrid(const vector<vector<Tile>>& t){
+    int rowSize = t.size();
+    for(int i = 0; i < rowSize; i++){
+        for(int j = 0; j < rowSize; j++){
+            if(t[i][j].isFlagged){
+                cout << "F";
+            }
+            else if(t[i][j].isCovered){
+                cout << "O";
+            }
+            else if(t[i][j].isBomb){
+                cout << "X";
+            }
+            else if(t[i][j].adjacentBombs != 0){
+                cout << t[i][j].adjacentBombs;
+            }
+            else{
+                cout << " ";
+            }
         }
-        else if(t.isCovered){
-            cout << "O";
-        }
-        else if(t.isBomb){
-            cout << "X";
-        }
-        else if(t.adjacentBombs != 0){
-            cout << t.adjacentBombs;
-        }
-        else{
-            cout << " ";
-        }
-        if(column % rowSize == 0){
-            cout << endl;
-            column = 0;
-        }
+        cout << endl;
     }
 }
 
