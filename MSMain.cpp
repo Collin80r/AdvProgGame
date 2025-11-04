@@ -28,7 +28,7 @@ void startUp();
 
 void printGrid();
 
-void input(int);
+void input(int, vector<vector<Tile>>);
 
 void gameOver();
 
@@ -44,7 +44,7 @@ int main(){
     int bombCount{15};
     int gridSize{5};
     auto grid = createGrid(bombCount, gridSize);
-    input(gridSize);
+    input(gridSize, grid);
 }
 
 /*-------------------
@@ -103,11 +103,11 @@ void printGrid(){
 
 }
 
-void input(int gridSize){
+void input(int gridSize, vector<vector<Tile>> grid){
     int selection = 0;
 
-    int x{0};
-    int y{0};
+    int xInput{0};
+    int yInput{0};
     int valid{1};
     do{
         cout<<"Options: \n(1) dig\n(2) place flag\n(3) remove flag"<<endl;
@@ -122,10 +122,10 @@ void input(int gridSize){
     } while (valid == 0);
     do{
         cout<<"x: ";
-        cin>>x;
+        cin>>xInput;
         cout<<"\ny: ";
-        cin>>y;
-        if (!(((x < gridSize) && (x >= 0)) && ((y < gridSize) && (y >=0)))){
+        cin>>yInput;
+        if (!(((xInput < gridSize) && (xInput >= 0)) && ((yInput < gridSize) && (yInput >= 0)))){
             cout<<"\nInput out of bounds. Use x and y coordinates from 0 to "<<gridSize<<"."<<endl;
             valid = 0;
         }else{
@@ -133,7 +133,20 @@ void input(int gridSize){
         }
     } while (valid == 0);
     //now do the chekcing thingies
-    
+    if (selection == 1){//dig
+        if (grid.at(xInput).at(yInput).isBomb = true){
+            gameOver();
+        }else{
+            revealTile();
+        }
+    }
+    if (selection == 2){//flag
+        grid.at(xInput).at(yInput).isFlagged = true;
+    }
+    if (selection == 3){//unflag
+        grid.at(xInput).at(yInput).isFlagged = false;
+    }
+
 }
 
 void gameOver(){
