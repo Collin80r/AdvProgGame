@@ -1,6 +1,7 @@
 #include <iostream>
 #include <vector>
 #include <stdlib.h>
+//#include <variant>
 using namespace std;
 
 class Tile {
@@ -43,7 +44,7 @@ int main(){
     int bombCount{15};
     int gridSize{5};
     auto grid = createGrid(bombCount, gridSize);
-
+    input(gridSize);
 }
 
 /*-------------------
@@ -103,13 +104,15 @@ void printGrid(){
 }
 
 void input(int gridSize){
-    int selection{0};
+    int selection = 0;
+
     int x{0};
     int y{0};
     int valid{1};
     do{
         cout<<"Options: \n(1) dig\n(2) place flag\n(3) remove flag"<<endl;
         cin>>selection;
+
         if ((selection == 1) || (selection == 2) ||(selection == 3)){
             valid = 1;
         }else{
