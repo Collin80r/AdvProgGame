@@ -29,11 +29,11 @@ void mainMenu();
 
 void printGrid(const vector<vector<Tile> > grid);
 
-void input(int, vector<vector<Tile>>);
+void input(int, vector<vector<Tile>>&);
 
 void gameOver();
 
-void revealTile();
+void revealTile(vector<vector<Tile>>& aGrid, int aGridSize, int x, int y);
 
 void blankHandling();
 
@@ -46,7 +46,10 @@ int main(){
     int bombCount{15};
     int gridSize{5};
     auto grid = createGrid(bombCount, gridSize);
-    printGrid(grid);
+    while (true) {
+        printGrid(grid);
+        input(gridSize, grid);
+    }
 
 }
 
@@ -181,7 +184,7 @@ void printGrid(const vector<vector<Tile> > grid){
     }
 }
 
-void input(int gridSize, vector<vector<Tile>> grid){
+void input(int gridSize, vector<vector<Tile>>& grid){
     int selection = 0;
 
     int xInput{0};
@@ -212,29 +215,36 @@ void input(int gridSize, vector<vector<Tile>> grid){
     } while (valid == 0);
     //now do the chekcing thingies
     if (selection == 1){//dig
-        if (grid.at(xInput).at(yInput).isBomb = true){
+        if (grid.at(yInput).at(xInput).isBomb == true){
             gameOver();
         }else{
-            revealTile();
+            revealTile(grid, gridSize, xInput, yInput);
         }
     }
     if (selection == 2){//flag
-        grid.at(xInput).at(yInput).isFlagged = true;
+        grid.at(yInput).at(xInput).isFlagged = true;
     }
     if (selection == 3){//unflag
-        grid.at(xInput).at(yInput).isFlagged = false;
+        grid.at(yInput).at(xInput).isFlagged = false;
     }
 
 }
 
 void gameOver(){
-
+    cout << "BOOM!" << endl;
 }
 
-void revealTile(){
-
-}
-
-void blankHandling(){
-    
+void revealTile(vector<vector<Tile>>& aGrid, int aGridSize, int x, int y){
+    aGrid.at(y).at(x).isCovered = false;
+    if (aGrid.at(y).at(x).adjacentBombs == 0) {
+        for (int ySearch{-1};ySearch<=1;ySearch++) {
+            for (int xSearch{-1};xSearch<=1;xSearch++) {
+                if ((x+xSearch > -1) && (y+ySearch > -1) && (x+xSearch < aGridSize) && (y+ySearch < aGridSize)) {
+                    if (aGrid.at(y+ySearch).at(x+xSearch).isCovered) {
+                        revealTile(aGrid, aGridSize, x+xSearch, y+ySearch);
+                    }
+                }
+            }
+        }
+    }
 }
