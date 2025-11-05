@@ -29,7 +29,7 @@ void mainMenu();
 
 void printGrid(const vector<vector<Tile> > grid);
 
-void input();
+void input(int, vector<vector<Tile>>);
 
 void gameOver();
 
@@ -181,7 +181,49 @@ void printGrid(const vector<vector<Tile> > grid){
     }
 }
 
-void input(){
+void input(int gridSize, vector<vector<Tile>> grid){
+    int selection = 0;
+
+    int xInput{0};
+    int yInput{0};
+    int valid{1};
+    do{
+        cout<<"Options: \n(1) dig\n(2) place flag\n(3) remove flag"<<endl;
+        cin>>selection;
+
+        if ((selection == 1) || (selection == 2) ||(selection == 3)){
+            valid = 1;
+        }else{
+            valid = 0;
+            cout<<"\nYour input was not in the given range. Pick 1, 2, or 3.\n";
+        }
+    } while (valid == 0);
+    do{
+        cout<<"x: ";
+        cin>>xInput;
+        cout<<"\ny: ";
+        cin>>yInput;
+        if (!(((xInput < gridSize) && (xInput >= 0)) && ((yInput < gridSize) && (yInput >= 0)))){
+            cout<<"\nInput out of bounds. Use x and y coordinates from 0 to "<<gridSize<<"."<<endl;
+            valid = 0;
+        }else{
+            valid = 1;
+        }
+    } while (valid == 0);
+    //now do the chekcing thingies
+    if (selection == 1){//dig
+        if (grid.at(xInput).at(yInput).isBomb = true){
+            gameOver();
+        }else{
+            revealTile();
+        }
+    }
+    if (selection == 2){//flag
+        grid.at(xInput).at(yInput).isFlagged = true;
+    }
+    if (selection == 3){//unflag
+        grid.at(xInput).at(yInput).isFlagged = false;
+    }
 
 }
 
