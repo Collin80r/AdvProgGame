@@ -21,11 +21,13 @@ class Tile {
 ---- PROTOTYPES ----
 ------------------*/
 
+bool checkWin(const vector<vector<Tile> > aGrid, int aGridSize);
+
 vector<vector<Tile> > createGrid(int aBombCount, int aGridSize);
 
 void startGame(int gridSize);
 
-void mainMenu();
+int mainMenu();
 
 void printGrid(const vector<vector<Tile> > grid);
 
@@ -42,13 +44,15 @@ void blankHandling();
 ------------------*/
 
 int main(){
-    mainMenu();
+    int gridSize{0};
+    gridSize = mainMenu();
     int bombCount{15};
-    int gridSize{5};
     auto grid = createGrid(bombCount, gridSize);
-    while (true) {
+    bool endGame = false;
+    while (!endGame) {
         printGrid(grid);
         input(gridSize, grid);
+        endGame = checkWin(grid, gridSize);
     }
 
 }
@@ -65,7 +69,7 @@ void startGame(int gridSize) {
     // TODO: Implement actual Minesweeper game here
 }
 
-void mainMenu() {
+int mainMenu() {
     while (true) {
         // Intro blurb
         cout << "=======================================\n";
@@ -102,14 +106,24 @@ void mainMenu() {
         cin >> start;
 
         if (start == "yes" || start == "y" || start == "Y" || start == "Yes") {
-            startGame(gridSize);
-            cout << "Press Enter to return to main menu...";
-            cin.ignore(); // To ignore leftover newline
-            cin.get();    // Wait for Enter
+            return gridSize;
         } else {
             cout << "\nReturning to main menu...\n\n";
         }
     }
+}
+
+bool checkWin(const vector<vector<Tile> > aGrid, int aGridSize){
+    bool gameWon{true};
+    for (int x{0};x<aGridSize;x++) {
+        for (int y{0};y<aGridSize;y++) {
+            const auto tile = aGrid.at(x).at(y);
+            if (!tile.isBomb && tile.isCovered) {
+                gameWon = false;
+            }
+        }
+    }
+    return gameWon;
 }
 
 vector<vector<Tile> > createGrid(int aBombCount, int aGridSize){
