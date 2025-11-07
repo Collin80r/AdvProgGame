@@ -101,12 +101,14 @@ void startUp(){
 void printGrid(const vector<vector<Tile>> grid){
     int rowSize = grid.size();
     for(int i = 0; i < rowSize; i++){
+        cout << "\033[47m|\033[0m";
         for(int j = 0; j < rowSize; j++){
             if(grid[i][j].isFlagged){
                 cout << "F";
             }
             else if(grid[i][j].isCovered){
-                cout << "O";
+                //cout << "O";
+                cout << "\033[47m_|\033[0m";
             }
             else if(grid[i][j].isBomb){
                 cout << "X";
