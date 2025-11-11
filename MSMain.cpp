@@ -21,7 +21,7 @@ class Tile {
 ---- PROTOTYPES ----
 ------------------*/
 
-bool checkWin(const vector<vector<Tile> > aGrid);
+bool checkWin(const vector<vector<Tile>> aGrid);
 
 vector<vector<Tile>> createGrid(int aGridSize);
 
@@ -31,7 +31,7 @@ void startGame(int gridSize);
 
 int mainMenu();
 
-void printGrid(const vector<vector<Tile> > grid);
+void printGrid(const vector<vector<Tile>> grid);
 
 void input(vector<vector<Tile>>& grid, int turn, int bombCount);
 
@@ -258,8 +258,10 @@ void input(vector<vector<Tile>>& grid, int turn, int bombCount){
     do{
         cout<<"x: ";
         cin>>xInput;
+        xInput--;
         cout<<"\ny: ";
         cin>>yInput;
+        yInput--;
         if (!(((xInput < gridSize) && (xInput >= 0)) && ((yInput < gridSize) && (yInput >= 0)))){
             cout<<"\nInput out of bounds. Use x and y coordinates from 0 to "<<gridSize<<"."<<endl;
             valid = 0;
