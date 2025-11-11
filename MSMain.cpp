@@ -215,7 +215,18 @@ void printGrid(const vector<vector<Tile> > grid){
             //different colors for different numbers
             else if(grid[i][j].adjacentBombs != 0){
                 numBombs = grid[i][j].adjacentBombs;
-                cout << "\033[4;34m"<<numBombs<<"\033[0m";
+                if(numBombs == 1 || numBombs == 5){//magenta
+                    cout << "\033[4;35m"<<numBombs<<"\033[0;40m|\033[0m";
+                }
+                else if(numBombs == 2 || numBombs == 6){//blue
+                    cout << "\033[4;34m"<<numBombs<<"\033[0;40m|\033[0m";
+                }
+                else if(numBombs == 3 || numBombs == 7){//yellow
+                    cout << "\033[4;33m"<<numBombs<<"\033[0;40m|\033[0m";
+                }
+                else{//green
+                    cout << "\033[4;32m"<<numBombs<<"\033[0;40m|\033[0m";
+                }
             }
             //no background but need underline
             else{
