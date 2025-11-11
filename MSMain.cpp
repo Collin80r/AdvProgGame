@@ -21,7 +21,7 @@ class Tile {
 ---- PROTOTYPES ----
 ------------------*/
 
-bool checkWin(const vector<vector<Tile> > aGrid, int aGridSize);
+bool checkWin(const vector<vector<Tile> > aGrid);
 
 vector<vector<Tile> > createGrid(int aBombCount, int aGridSize);
 
@@ -31,11 +31,11 @@ int mainMenu();
 
 void printGrid(const vector<vector<Tile> > grid);
 
-void input(int, vector<vector<Tile>>&);
+void input(vector<vector<Tile>>& grid);
 
 void gameOver();
 
-void revealTile(vector<vector<Tile>>& aGrid, int aGridSize, int x, int y);
+void revealTile(vector<vector<Tile>>& aGrid, int x, int y);
 
 void blankHandling();
 
@@ -51,8 +51,8 @@ int main(){
     bool endGame = false;
     while (!endGame) {
         printGrid(grid);
-        input(gridSize, grid);
-        endGame = checkWin(grid, gridSize);
+        input(grid);
+        endGame = checkWin(grid);
     }
 
 }
@@ -113,8 +113,9 @@ int mainMenu() {
     }
 }
 
-bool checkWin(const vector<vector<Tile> > aGrid, int aGridSize){
+bool checkWin(const vector<vector<Tile> > aGrid){
     bool gameWon{true};
+    int aGridSize = aGrid.size();
     for (int x{0};x<aGridSize;x++) {
         for (int y{0};y<aGridSize;y++) {
             const auto tile = aGrid.at(x).at(y);
@@ -198,8 +199,9 @@ void printGrid(const vector<vector<Tile> > grid){
     }
 }
 
-void input(int gridSize, vector<vector<Tile>>& grid){
+void input(vector<vector<Tile>>& grid){
     int selection = 0;
+    int gridSize = grid.size();
 
     int xInput{0};
     int yInput{0};
@@ -227,12 +229,11 @@ void input(int gridSize, vector<vector<Tile>>& grid){
             valid = 1;
         }
     } while (valid == 0);
-    //now do the chekcing thingies
     if (selection == 1){//dig
         if (grid.at(yInput).at(xInput).isBomb == true){
             gameOver();
         }else{
-            revealTile(grid, gridSize, xInput, yInput);
+            revealTile(grid, xInput, yInput);
         }
     }
     if (selection == 2){//flag
@@ -241,21 +242,21 @@ void input(int gridSize, vector<vector<Tile>>& grid){
     if (selection == 3){//unflag
         grid.at(yInput).at(xInput).isFlagged = false;
     }
-
 }
 
 void gameOver(){
     cout << "BOOM!" << endl;
 }
 
-void revealTile(vector<vector<Tile>>& aGrid, int aGridSize, int x, int y){
+void revealTile(vector<vector<Tile>>& aGrid, int x, int y){
+    int aGridSize = aGrid.size();
     aGrid.at(y).at(x).isCovered = false;
     if (aGrid.at(y).at(x).adjacentBombs == 0) {
         for (int ySearch{-1};ySearch<=1;ySearch++) {
             for (int xSearch{-1};xSearch<=1;xSearch++) {
                 if ((x+xSearch > -1) && (y+ySearch > -1) && (x+xSearch < aGridSize) && (y+ySearch < aGridSize)) {
                     if (aGrid.at(y+ySearch).at(x+xSearch).isCovered) {
-                        revealTile(aGrid, aGridSize, x+xSearch, y+ySearch);
+                        revealTile(aGrid, x+xSearch, y+ySearch);
                     }
                 }
             }
