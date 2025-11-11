@@ -23,7 +23,9 @@ class Tile {
 
 bool checkWin(const vector<vector<Tile> > aGrid);
 
-vector<vector<Tile> > createGrid(int aBombCount, int aGridSize);
+vector<vector<Tile>> createGrid(int aGridSize);
+
+void randomizeGrid(vector<vector<Tile>>& aGrid, int aBombCount, int xInput, int yInput);
 
 void startGame(int gridSize);
 
@@ -31,7 +33,7 @@ int mainMenu();
 
 void printGrid(const vector<vector<Tile> > grid);
 
-void input(vector<vector<Tile>>& grid);
+void input(vector<vector<Tile>>& grid, int turn, int bombCount);
 
 void gameOver();
 
@@ -44,14 +46,17 @@ void blankHandling();
 ------------------*/
 
 int main(){
+    srand(static_cast<unsigned int>(time(0)));
     int gridSize{0};
     gridSize = mainMenu();
     int bombCount{15};
-    auto grid = createGrid(bombCount, gridSize);
+    auto grid = createGrid(gridSize);
     bool endGame = false;
+    int turn{0};
     while (!endGame) {
+        turn++;
         printGrid(grid);
-        input(grid);
+        input(grid, turn, bombCount);
         endGame = checkWin(grid);
     }
 
@@ -127,7 +132,7 @@ bool checkWin(const vector<vector<Tile> > aGrid){
     return gameWon;
 }
 
-vector<vector<Tile> > createGrid(int aBombCount, int aGridSize){
+vector<vector<Tile> > createGrid(int aGridSize){
     // Initialize Grid
     vector<vector<Tile> > grid;
     vector<Tile> column;
@@ -138,41 +143,49 @@ vector<vector<Tile> > createGrid(int aBombCount, int aGridSize){
     for (int i{0};i<aGridSize;i++) {
         grid.push_back(column);
     }
-
-    // Initialize Bombs
-    for (int i{0};i<aBombCount;i++) {
-        int xPos{0};
-        int yPos{0};
-        do {
-            xPos = rand() % (aGridSize);
-            yPos = rand() % (aGridSize);
-        } while (grid.at(xPos).at(yPos).isBomb);
-        grid[xPos][yPos].isBomb = true;
-    }
-
-    // Initialize Numbers
-    for (int x{0};x<aGridSize;x++) {
-        for (int y{0};y<aGridSize;y++) {
-            if (!grid.at(x).at(y).isBomb) {
-                int adjacentBombs{0};
-                for (int xSearch{-1};xSearch<=1;xSearch++) {
-                    for (int ySearch{-1};ySearch<=1;ySearch++) {
-                        if ((x+xSearch > -1) && (y+ySearch > -1) && (x+xSearch < aGridSize) && (y+ySearch < aGridSize)) {
-                            if (grid.at(x+xSearch).at(y+ySearch).isBomb){
-                                adjacentBombs++;
-                            }
-                        }
-                    }
-                }
-                grid.at(x).at(y).adjacentBombs = adjacentBombs;
-            }
-        }
-    }
     return grid;
 }
 
-void startUp(){
+void randomizeGrid(vector<vector<Tile>>& aGrid, int aBombCount, int xInput, int yInput){
+    int gridSize = aGrid.size();
+    do {
+        for (int i{0};i<gridSize;i++){
+            for (int j{0};j<gridSize;j++) {
+                aGrid.at(i).at(j).adjacentBombs = 0;
+                aGrid.at(i).at(j).isBomb = 0;
+            }
+        }
+        // Initialize Bombs
+        for (int i{0};i<aBombCount;i++) {
+            int xPos{0};
+            int yPos{0};
+            do {
+                xPos = rand() % (gridSize);
+                yPos = rand() % (gridSize);
+            } while (aGrid.at(yPos).at(xPos).isBomb);
+            aGrid[yPos][xPos].isBomb = true;
+            aGrid[yPos][xPos].adjacentBombs = 0;
+        }
 
+        // Initialize Numbers
+        for (int y{0};y<gridSize;y++) {
+            for (int x{0};x<gridSize;x++) {
+                if (!aGrid.at(y).at(x).isBomb) {
+                    int adjacentBombs{0};
+                    for (int ySearch{-1};ySearch<=1;ySearch++) {
+                        for (int xSearch{-1};xSearch<=1;xSearch++) {
+                            if ((x+xSearch > -1) && (y+ySearch > -1) && (x+xSearch < gridSize) && (y+ySearch < gridSize)) {
+                                if (aGrid.at(y+ySearch).at(x+xSearch).isBomb){
+                                    adjacentBombs++;
+                                }
+                            }
+                        }
+                    }
+                    aGrid.at(y).at(x).adjacentBombs = adjacentBombs;
+                }
+            }
+        }
+    } while (aGrid.at(yInput).at(xInput).adjacentBombs != 0 || aGrid.at(yInput).at(xInput).isBomb);
 }
 
 void printGrid(const vector<vector<Tile> > grid){
@@ -213,7 +226,7 @@ void printGrid(const vector<vector<Tile> > grid){
     }
 }
 
-void input(vector<vector<Tile>>& grid){
+void input(vector<vector<Tile>>& grid, int turn, int bombCount){
     int selection = 0;
     int gridSize = grid.size();
 
@@ -247,6 +260,9 @@ void input(vector<vector<Tile>>& grid){
         if (grid.at(yInput).at(xInput).isBomb == true){
             gameOver();
         }else{
+            if (turn==1) {
+                randomizeGrid(grid, bombCount, xInput, yInput);
+            }
             revealTile(grid, xInput, yInput);
         }
     }
