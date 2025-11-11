@@ -177,22 +177,36 @@ void startUp(){
 
 void printGrid(const vector<vector<Tile> > grid){
     int rowSize = grid.size();
+    int numBombs = 0;
+    cout << "   ";
     for(int i = 0; i < rowSize; i++){
+        cout << i+1 << " ";
+    }
+    cout << endl;
+    for(int i = 0; i < rowSize; i++){
+        cout << i+1 << " ";
+        cout << "\033[37;40m|\033[0m";
         for(int j = 0; j < rowSize; j++){
+            //background white; text red
             if(grid[i][j].isFlagged){
-                cout << "F";
+                cout << "\033[4;47;31mF\033[0;37;40m|\033[0m";
             }
+            //background white
             else if(grid[i][j].isCovered){
-                cout << "O";
+                cout << "\033[47m_\033[0;37;40m|\033[0m";
             }
+            //background red; text black
             else if(grid[i][j].isBomb){
-                cout << "X";
+                cout << "\033[4;30;41mX\033[0;37;40m|\033[0m";
             }
+            //different colors for different numbers
             else if(grid[i][j].adjacentBombs != 0){
-                cout << grid[i][j].adjacentBombs;
+                numBombs = grid[i][j].adjacentBombs;
+                cout << "\033[4;34m"<<numBombs<<"\033[0m";
             }
+            //no background but need underline
             else{
-                cout << " ";
+                cout << "\033[4m \033[0m|";
             }
         }
         cout << endl;
