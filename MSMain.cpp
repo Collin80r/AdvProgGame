@@ -39,8 +39,6 @@ void gameOver();
 
 void revealTile(vector<vector<Tile>>& aGrid, int x, int y);
 
-void blankHandling();
-
 long checkTime(long startTime);
 
 /*------------------
