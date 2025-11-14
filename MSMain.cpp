@@ -35,7 +35,7 @@ void printGrid(const vector<vector<Tile>> grid);
 
 void input(vector<vector<Tile>>& grid, int turn, int bombCount);
 
-void gameOver();
+void gameOver(bool gameWon, bool isBomb);
 
 void revealTile(vector<vector<Tile>>& aGrid, int x, int y);
 
@@ -308,6 +308,27 @@ void revealTile(vector<vector<Tile>>& aGrid, int x, int y){
                 }
             }
         }
+    }
+}
+void gameOver(bool gameWon, bool isBomb) {
+    cout << "\n=======================================\n";
+    cout << "           BOOM!   GAME OVER!            \n";
+    cout << "=========================================\n";
+    cout << "Total Bombs: " << isBomb << "\n";
+    cout << "Bombs Hit:   " << gameWon << "\n";
+    cout << "---------------------------------------\n";
+
+    string choice;
+    cout << "Would you like to play again? (yes/no): ";
+    cin >> choice;
+
+    if (choice == "yes" || choice == "y" || choice == "Y" || choice == "Yes") {
+        cout << "\nReturning to start menu...\n\n";
+        mainMenu(); // Go back to start menu
+    } else {
+        cout << "\nThanks for playing Minesweeper!\n";
+        cout << "Goodbye!\n";
+        exit(0); // End the program
     }
 }
 
