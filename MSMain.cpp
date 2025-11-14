@@ -17,11 +17,17 @@ class Tile {
         }
 };
 
+enum gameState {
+    WIN,
+    LOSE,
+    CONTINUE,
+};
+
 /*------------------
 ---- PROTOTYPES ----
 ------------------*/
 
-bool checkWin(const vector<vector<Tile>> aGrid);
+gameState checkEnd(const vector<vector<Tile>> aGrid);
 
 vector<vector<Tile>> createGrid(int aGridSize);
 
@@ -35,7 +41,7 @@ void printGrid(const vector<vector<Tile>> grid);
 
 void input(vector<vector<Tile>>& grid, int turn, int bombCount);
 
-void gameOver(bool gameWon, bool isBomb);
+void gameOver(long startTime, int bombCount, int correctFlagCount);
 
 void revealTile(vector<vector<Tile>>& aGrid, int x, int y);
 
@@ -47,23 +53,59 @@ long checkTime(long startTime);
 
 int main(){
     srand(static_cast<unsigned int>(time(0)));
-    time_t startTime;
-    time(&startTime);
-    checkTime(startTime);
+    bool playAgain{true};
+    while (playAgain) {
+        time_t startTime;
+        time(&startTime);
 
-    int gridSize{0};
-    gridSize = mainMenu();
-    int bombCount = gridSize*gridSize * 0.126;
-    auto grid = createGrid(gridSize);
-    bool endGame = false;
-    int turn{0};
-    while (!endGame) {
-        turn++;
+        int gridSize{0};
+        gridSize = mainMenu();
+        int bombCount = gridSize*gridSize * 0.126;
+        auto grid = createGrid(gridSize);
+        gameState endGame{CONTINUE};
+        int turn{0};
+        while (endGame == CONTINUE) {
+            turn++;
+            printGrid(grid);
+            input(grid, turn, bombCount);
+            endGame = checkEnd(grid);
+        }
         printGrid(grid);
-        input(grid, turn, bombCount);
-        endGame = checkWin(grid);
-    }
+        if (endGame == WIN) {
+            cout << "\n=======================================\n";
+            cout << "        CONGRATULATIONS! YOU WIN!        \n";
+            cout << "=========================================\n";
+            cout << "Completed in " << checkTime(startTime) << " seconds\n";
+        } else {
+            int correctFlagCount{0};
+            for (int i{0};i<gridSize;i++) {
+                for (int j{0};j<gridSize;j++) {
+                    if (grid.at(i).at(j).isBomb && grid.at(i).at(j).isFlagged) {
+                        correctFlagCount++;
+                    }
+                }
+            }
 
+            cout << "\n=======================================\n";
+            cout << "           BOOM!   GAME OVER!            \n";
+            cout << "=========================================\n";
+
+            cout << correctFlagCount << "/" << bombCount << " bombs found\n";
+            cout <<checkTime(startTime) << " seconds wasted\n";
+            cout << "---------------------------------------\n";
+
+        }
+        string choice;
+        cout << "Would you like to play again? (yes/no): ";
+        cin >> choice;
+        if (choice == "yes" || choice == "y" || choice == "Y" || choice == "Yes") {
+            cout << "\nReturning to start menu...\n\n";
+        } else {
+            cout << "\nThanks for playing Minesweeper!\n";
+            cout << "Goodbye!\n";
+            playAgain = false;
+        }
+    }
 }
 
 /*-------------------
@@ -122,18 +164,22 @@ int mainMenu() {
     }
 }
 
-bool checkWin(const vector<vector<Tile> > aGrid){
-    bool gameWon{true};
+gameState checkEnd(const vector<vector<Tile> > aGrid){
+    gameState endGame{WIN};
     int aGridSize = aGrid.size();
     for (int x{0};x<aGridSize;x++) {
         for (int y{0};y<aGridSize;y++) {
             const auto tile = aGrid.at(x).at(y);
-            if (!tile.isBomb && tile.isCovered) {
-                gameWon = false;
+            if ((!tile.isBomb && tile.isCovered)) { // Keep going
+                endGame = CONTINUE;
+            }
+            if ((tile.isBomb && !tile.isCovered)) { // Fail Condition
+                endGame = LOSE;
+                return endGame;
             }
         }
     }
-    return gameWon;
+    return endGame;
 }
 
 vector<vector<Tile> > createGrid(int aGridSize){
@@ -274,14 +320,10 @@ void input(vector<vector<Tile>>& grid, int turn, int bombCount){
         }
     } while (valid == 0);
     if (selection == 1){//dig
-        if (grid.at(yInput).at(xInput).isBomb == true){
-            gameOver();
-        }else{
-            if (turn==1) {
-                randomizeGrid(grid, bombCount, xInput, yInput);
-            }
-            revealTile(grid, xInput, yInput);
+        if (turn==1) {
+            randomizeGrid(grid, bombCount, xInput, yInput);
         }
+        revealTile(grid, xInput, yInput);
     }
     if (selection == 2){//flag
         grid.at(yInput).at(xInput).isFlagged = true;
@@ -289,10 +331,6 @@ void input(vector<vector<Tile>>& grid, int turn, int bombCount){
     if (selection == 3){//unflag
         grid.at(yInput).at(xInput).isFlagged = false;
     }
-}
-
-void gameOver(){
-    cout << "BOOM!" << endl;
 }
 
 void revealTile(vector<vector<Tile>>& aGrid, int x, int y){
@@ -308,27 +346,6 @@ void revealTile(vector<vector<Tile>>& aGrid, int x, int y){
                 }
             }
         }
-    }
-}
-void gameOver(bool gameWon, bool isBomb) {
-    cout << "\n=======================================\n";
-    cout << "           BOOM!   GAME OVER!            \n";
-    cout << "=========================================\n";
-    cout << "Total Bombs: " << isBomb << "\n";
-    cout << "Bombs Hit:   " << gameWon << "\n";
-    cout << "---------------------------------------\n";
-
-    string choice;
-    cout << "Would you like to play again? (yes/no): ";
-    cin >> choice;
-
-    if (choice == "yes" || choice == "y" || choice == "Y" || choice == "Yes") {
-        cout << "\nReturning to start menu...\n\n";
-        mainMenu(); // Go back to start menu
-    } else {
-        cout << "\nThanks for playing Minesweeper!\n";
-        cout << "Goodbye!\n";
-        exit(0); // End the program
     }
 }
 
