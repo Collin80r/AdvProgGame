@@ -90,8 +90,8 @@ int mainMenu() {
         // Difficulty selection
         cout << "Select Difficulty Level:\n";
         cout << "1. Easy (4x4)\n";
-        cout << "2. Medium (8x8)\n";
-        cout << "3. Hard (12x12)\n";
+        cout << "2. Medium (6x6)\n";
+        cout << "3. Hard (9x9)\n";
 
         int choice;
         cout << "Enter your choice (1-3): ";
@@ -101,9 +101,9 @@ int mainMenu() {
         if (choice == 1) {
             gridSize = 4;
         } else if (choice == 2) {
-            gridSize = 8;
+            gridSize = 6;
         } else if (choice == 3) {
-            gridSize = 12;
+            gridSize = 9;
         } else {
             cout << "\nInvalid choice! Please select 1, 2, or 3.\n\n";
             continue; // Go back to menu
