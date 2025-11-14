@@ -53,7 +53,7 @@ int main(){
 
     int gridSize{0};
     gridSize = mainMenu();
-    int bombCount{15};
+    int bombCount = gridSize*gridSize * 0.126;
     auto grid = createGrid(gridSize);
     bool endGame = false;
     int turn{0};
@@ -90,8 +90,8 @@ int mainMenu() {
         // Difficulty selection
         cout << "Select Difficulty Level:\n";
         cout << "1. Easy (4x4)\n";
-        cout << "2. Medium (6x6)\n";
-        cout << "3. Hard (9x9)\n";
+        cout << "2. Medium (8x8)\n";
+        cout << "3. Hard (12x12)\n";
 
         int choice;
         cout << "Enter your choice (1-3): ";
@@ -101,9 +101,9 @@ int mainMenu() {
         if (choice == 1) {
             gridSize = 4;
         } else if (choice == 2) {
-            gridSize = 6;
+            gridSize = 8;
         } else if (choice == 3) {
-            gridSize = 9;
+            gridSize = 12;
         } else {
             cout << "\nInvalid choice! Please select 1, 2, or 3.\n\n";
             continue; // Go back to menu
