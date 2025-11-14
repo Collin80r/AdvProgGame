@@ -39,7 +39,7 @@ void gameOver();
 
 void revealTile(vector<vector<Tile>>& aGrid, int x, int y);
 
-void blankHandling();
+long checkTime(long startTime);
 
 /*------------------
 ----    MAIN    ----
@@ -47,6 +47,10 @@ void blankHandling();
 
 int main(){
     srand(static_cast<unsigned int>(time(0)));
+    time_t startTime;
+    time(&startTime);
+    checkTime(startTime);
+
     int gridSize{0};
     gridSize = mainMenu();
     int bombCount{15};
@@ -305,4 +309,10 @@ void revealTile(vector<vector<Tile>>& aGrid, int x, int y){
             }
         }
     }
+}
+
+long checkTime(long startTime){//call this, Antonio. it gives time in seconds //checkTime(startTime);
+    time_t currentTime;
+    time(&currentTime);
+    return(currentTime - startTime);
 }
