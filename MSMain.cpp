@@ -1,6 +1,7 @@
 #include <iostream>
-#include <vector>
+#include <iomanip>
 #include <string>
+#include <vector>
 using namespace std;
 
 class Tile {
@@ -56,7 +57,7 @@ int main(){
 
         int gridSize{0};
         gridSize = mainMenu();
-        int bombCount = gridSize*gridSize * 0.126;
+        int bombCount = gridSize*gridSize * 0.181;
         auto grid = createGrid(gridSize);
         gameState gameStatus{CONTINUE};
         int turn{0};
@@ -171,7 +172,7 @@ void input(vector<vector<Tile>>& grid, int turn, int bombCount){
         cin>>yInput;
         yInput--;
         if (!(((xInput < gridSize) && (xInput >= 0)) && ((yInput < gridSize) && (yInput >= 0)))){
-            cout<<"\nInput out of bounds. Use x and y coordinates from 0 to "<<gridSize<<"."<<endl;
+            cout<<"\nInput out of bounds. Use x and y coordinates from 1 to "<<gridSize<<"."<<endl;
             valid = 0;
         }else{
             valid = 1;
@@ -202,9 +203,9 @@ int mainMenu() {
 
         // Difficulty selection
         cout << "Select Difficulty Level:\n";
-        cout << "1. Easy (4x4)\n";
-        cout << "2. Medium (6x6)\n";
-        cout << "3. Hard (9x9)\n";
+        cout << "1. Easy (5x5)\n";
+        cout << "2. Medium (8x8)\n";
+        cout << "3. Hard (10x10)\n";
 
         int choice;
         cout << "Enter your choice (1-3): ";
@@ -212,39 +213,30 @@ int mainMenu() {
 
         int gridSize;
         if (choice == 1) {
-            gridSize = 4;
+            gridSize = 5;
         } else if (choice == 2) {
-            gridSize = 6;
+            gridSize = 8;
         } else if (choice == 3) {
-            gridSize = 9;
+            gridSize = 10;
         } else {
             cout << "\nInvalid choice! Please select 1, 2, or 3.\n\n";
             continue; // Go back to menu
         }
 
-        // Ask if they want to start the game
-        string start;
-        cout << "\nDo you want to start the " << gridSize << "x" << gridSize << " game? (yes/no): ";
-        cin >> start;
-
-        if (start == "yes" || start == "y" || start == "Y" || start == "Yes") {
-            return gridSize;
-        } else {
-            cout << "\nReturning to main menu...\n\n";
-        }
+        return gridSize;
     }
 }
 
-void printGrid(const vector<vector<Tile> > grid){
+void printGrid(const vector<vector<Tile>> grid){
     int rowSize = grid.size();
     int numBombs = 0;
-    cout << "   ";
+    cout << "    ";
     for(int i = 0; i < rowSize; i++){
-        cout << i+1 << " ";
+        cout << setw(2) << left << i+1;
     }
     cout << endl;
     for(int i = 0; i < rowSize; i++){
-        cout << i+1 << " ";
+        cout << setw(3) << right << i+1;
         cout << "\033[37;40m|\033[0m";
         for(int j = 0; j < rowSize; j++){
             //background white; text red
