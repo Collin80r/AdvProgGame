@@ -27,25 +27,21 @@ enum gameState {
 ---- PROTOTYPES ----
 ------------------*/
 
-gameState checkEnd(const vector<vector<Tile>> aGrid);
+gameState checkGameState(const vector<vector<Tile>> aGrid);
+
+long checkTime(long startTime);
 
 vector<vector<Tile>> createGrid(int aGridSize);
 
-void randomizeGrid(vector<vector<Tile>>& aGrid, int aBombCount, int xInput, int yInput);
-
-void startGame(int gridSize);
+void input(vector<vector<Tile>>& grid, int turn, int bombCount);
 
 int mainMenu();
 
 void printGrid(const vector<vector<Tile>> grid);
 
-void input(vector<vector<Tile>>& grid, int turn, int bombCount);
-
-void gameOver(long startTime, int bombCount, int correctFlagCount);
+void randomizeGrid(vector<vector<Tile>>& aGrid, int aBombCount, int xInput, int yInput);
 
 void revealTile(vector<vector<Tile>>& aGrid, int x, int y);
-
-long checkTime(long startTime);
 
 /*------------------
 ----    MAIN    ----
@@ -62,16 +58,16 @@ int main(){
         gridSize = mainMenu();
         int bombCount = gridSize*gridSize * 0.126;
         auto grid = createGrid(gridSize);
-        gameState endGame{CONTINUE};
+        gameState gameStatus{CONTINUE};
         int turn{0};
-        while (endGame == CONTINUE) {
+        while (gameStatus == CONTINUE) {
             turn++;
             printGrid(grid);
             input(grid, turn, bombCount);
-            endGame = checkEnd(grid);
+            gameStatus = checkGameState(grid);
         }
         printGrid(grid);
-        if (endGame == WIN) {
+        if (gameStatus == WIN) {
             cout << "\n=======================================\n";
             cout << "        CONGRATULATIONS! YOU WIN!        \n";
             cout << "=========================================\n";
@@ -112,12 +108,87 @@ int main(){
 ----  FUNCTIONS  ----
 -------------------*/
 
-// Placeholder function for Minesweeper game
-void startGame(int gridSize) {
-    cout << "\nStarting Minesweeper " << gridSize << "x" << gridSize << "...\n";
-    cout << "Game logic not implemented yet.\n\n";
+gameState checkGameState(const vector<vector<Tile> > aGrid){
+    gameState gameStatus{WIN};
+    int aGridSize = aGrid.size();
+    for (int x{0};x<aGridSize;x++) {
+        for (int y{0};y<aGridSize;y++) {
+            const auto tile = aGrid.at(x).at(y);
+            if ((!tile.isBomb && tile.isCovered)) { // Keep going
+                gameStatus = CONTINUE;
+            }
+            if ((tile.isBomb && !tile.isCovered)) { // Fail Condition
+                gameStatus = LOSE;
+                return gameStatus;
+            }
+        }
+    }
+    return gameStatus;
+}
 
-    // TODO: Implement actual Minesweeper game here
+long checkTime(long startTime){//call this, Antonio. it gives time in seconds //checkTime(startTime);
+    time_t currentTime;
+    time(&currentTime);
+    return(currentTime - startTime);
+}
+
+vector<vector<Tile> > createGrid(int aGridSize){
+    vector<vector<Tile> > grid;
+    vector<Tile> column;
+    Tile tile;
+    for (int j{0};j<aGridSize;j++) {
+        column.push_back(tile);
+    }
+    for (int i{0};i<aGridSize;i++) {
+        grid.push_back(column);
+    }
+    return grid;
+}
+
+void input(vector<vector<Tile>>& grid, int turn, int bombCount){
+    int selection = 0;
+    int gridSize = grid.size();
+
+    int xInput{0};
+    int yInput{0};
+    int valid{1};
+    do{
+        cout<<"Options: \n(1) dig\n(2) place flag\n(3) remove flag"<<endl;
+        cin>>selection;
+
+        if ((selection == 1) || (selection == 2) ||(selection == 3)){
+            valid = 1;
+        }else{
+            valid = 0;
+            cout<<"\nYour input was not in the given range. Pick 1, 2, or 3.\n";
+        }
+    } while (valid == 0);
+    do{
+        cout<<"x: ";
+        cin>>xInput;
+        xInput--;
+        cout<<"\ny: ";
+        cin>>yInput;
+        yInput--;
+        if (!(((xInput < gridSize) && (xInput >= 0)) && ((yInput < gridSize) && (yInput >= 0)))){
+            cout<<"\nInput out of bounds. Use x and y coordinates from 0 to "<<gridSize<<"."<<endl;
+            valid = 0;
+        }else{
+            valid = 1;
+        }
+    } while (valid == 0);
+    if (selection == 1){//dig
+        if (turn==1) {
+            randomizeGrid(grid, bombCount, xInput, yInput);
+        }
+        revealTile(grid, xInput, yInput);
+    }
+    if (selection == 2){//flag
+        grid.at(yInput).at(xInput).isFlagged = true;
+    }
+    if (selection == 3){//unflag
+        grid.at(yInput).at(xInput).isFlagged = false;
+    }
 }
 
 int mainMenu() {
@@ -162,80 +233,6 @@ int mainMenu() {
             cout << "\nReturning to main menu...\n\n";
         }
     }
-}
-
-gameState checkEnd(const vector<vector<Tile> > aGrid){
-    gameState endGame{WIN};
-    int aGridSize = aGrid.size();
-    for (int x{0};x<aGridSize;x++) {
-        for (int y{0};y<aGridSize;y++) {
-            const auto tile = aGrid.at(x).at(y);
-            if ((!tile.isBomb && tile.isCovered)) { // Keep going
-                endGame = CONTINUE;
-            }
-            if ((tile.isBomb && !tile.isCovered)) { // Fail Condition
-                endGame = LOSE;
-                return endGame;
-            }
-        }
-    }
-    return endGame;
-}
-
-vector<vector<Tile> > createGrid(int aGridSize){
-    // Initialize Grid
-    vector<vector<Tile> > grid;
-    vector<Tile> column;
-    Tile tile;
-    for (int j{0};j<aGridSize;j++) {
-        column.push_back(tile);
-    }
-    for (int i{0};i<aGridSize;i++) {
-        grid.push_back(column);
-    }
-    return grid;
-}
-
-void randomizeGrid(vector<vector<Tile>>& aGrid, int aBombCount, int xInput, int yInput){
-    int gridSize = aGrid.size();
-    do {
-        for (int i{0};i<gridSize;i++){
-            for (int j{0};j<gridSize;j++) {
-                aGrid.at(i).at(j).adjacentBombs = 0;
-                aGrid.at(i).at(j).isBomb = 0;
-            }
-        }
-        // Initialize Bombs
-        for (int i{0};i<aBombCount;i++) {
-            int xPos{0};
-            int yPos{0};
-            do {
-                xPos = rand() % (gridSize);
-                yPos = rand() % (gridSize);
-            } while (aGrid.at(yPos).at(xPos).isBomb);
-            aGrid[yPos][xPos].isBomb = true;
-            aGrid[yPos][xPos].adjacentBombs = 0;
-        }
-
-        // Initialize Numbers
-        for (int y{0};y<gridSize;y++) {
-            for (int x{0};x<gridSize;x++) {
-                if (!aGrid.at(y).at(x).isBomb) {
-                    int adjacentBombs{0};
-                    for (int ySearch{-1};ySearch<=1;ySearch++) {
-                        for (int xSearch{-1};xSearch<=1;xSearch++) {
-                            if ((x+xSearch > -1) && (y+ySearch > -1) && (x+xSearch < gridSize) && (y+ySearch < gridSize)) {
-                                if (aGrid.at(y+ySearch).at(x+xSearch).isBomb){
-                                    adjacentBombs++;
-                                }
-                            }
-                        }
-                    }
-                    aGrid.at(y).at(x).adjacentBombs = adjacentBombs;
-                }
-            }
-        }
-    } while (aGrid.at(yInput).at(xInput).adjacentBombs != 0 || aGrid.at(yInput).at(xInput).isBomb);
 }
 
 void printGrid(const vector<vector<Tile> > grid){
@@ -287,50 +284,46 @@ void printGrid(const vector<vector<Tile> > grid){
     }
 }
 
-void input(vector<vector<Tile>>& grid, int turn, int bombCount){
-    int selection = 0;
-    int gridSize = grid.size();
+void randomizeGrid(vector<vector<Tile>>& aGrid, int aBombCount, int xInput, int yInput){
+    int gridSize = aGrid.size();
+    do {
+        for (int i{0};i<gridSize;i++){
+            for (int j{0};j<gridSize;j++) {
+                aGrid.at(i).at(j).adjacentBombs = 0;
+                aGrid.at(i).at(j).isBomb = 0;
+            }
+        }
+        // Initialize Bombs
+        for (int i{0};i<aBombCount;i++) {
+            int xPos{0};
+            int yPos{0};
+            do {
+                xPos = rand() % (gridSize);
+                yPos = rand() % (gridSize);
+            } while (aGrid.at(yPos).at(xPos).isBomb);
+            aGrid[yPos][xPos].isBomb = true;
+            aGrid[yPos][xPos].adjacentBombs = 0;
+        }
 
-    int xInput{0};
-    int yInput{0};
-    int valid{1};
-    do{
-        cout<<"Options: \n(1) dig\n(2) place flag\n(3) remove flag"<<endl;
-        cin>>selection;
-
-        if ((selection == 1) || (selection == 2) ||(selection == 3)){
-            valid = 1;
-        }else{
-            valid = 0;
-            cout<<"\nYour input was not in the given range. Pick 1, 2, or 3.\n";
+        // Initialize Numbers
+        for (int y{0};y<gridSize;y++) {
+            for (int x{0};x<gridSize;x++) {
+                if (!aGrid.at(y).at(x).isBomb) {
+                    int adjacentBombs{0};
+                    for (int ySearch{-1};ySearch<=1;ySearch++) {
+                        for (int xSearch{-1};xSearch<=1;xSearch++) {
+                            if ((x+xSearch > -1) && (y+ySearch > -1) && (x+xSearch < gridSize) && (y+ySearch < gridSize)) {
+                                if (aGrid.at(y+ySearch).at(x+xSearch).isBomb){
+                                    adjacentBombs++;
+                                }
+                            }
+                        }
+                    }
+                    aGrid.at(y).at(x).adjacentBombs = adjacentBombs;
+                }
+            }
         }
-    } while (valid == 0);
-    do{
-        cout<<"x: ";
-        cin>>xInput;
-        xInput--;
-        cout<<"\ny: ";
-        cin>>yInput;
-        yInput--;
-        if (!(((xInput < gridSize) && (xInput >= 0)) && ((yInput < gridSize) && (yInput >= 0)))){
-            cout<<"\nInput out of bounds. Use x and y coordinates from 0 to "<<gridSize<<"."<<endl;
-            valid = 0;
-        }else{
-            valid = 1;
-        }
-    } while (valid == 0);
-    if (selection == 1){//dig
-        if (turn==1) {
-            randomizeGrid(grid, bombCount, xInput, yInput);
-        }
-        revealTile(grid, xInput, yInput);
-    }
-    if (selection == 2){//flag
-        grid.at(yInput).at(xInput).isFlagged = true;
-    }
-    if (selection == 3){//unflag
-        grid.at(yInput).at(xInput).isFlagged = false;
-    }
+    } while (aGrid.at(yInput).at(xInput).adjacentBombs != 0 || aGrid.at(yInput).at(xInput).isBomb);
 }
 
 void revealTile(vector<vector<Tile>>& aGrid, int x, int y){
@@ -347,10 +340,4 @@ void revealTile(vector<vector<Tile>>& aGrid, int x, int y){
             }
         }
     }
-}
-
-long checkTime(long startTime){//call this, Antonio. it gives time in seconds //checkTime(startTime);
-    time_t currentTime;
-    time(&currentTime);
-    return(currentTime - startTime);
 }
